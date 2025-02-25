@@ -30,3 +30,18 @@ jobs:
 
       - name: Run tests
         run: pytest tests/
+
+
+      - name: Create Issue on Failure
+        if: failure()  
+        uses: dacbd/create-issue-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "CI/CD Failed - Check Logs"
+          body: |
+            A workflow run has failed. Check the logs for details: 
+            - **Branch:** ${{ github.ref }}
+            - **Commit:** ${{ github.sha }}
+            - **Run ID:** ${{ github.run_id }}
+            - [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          labels: "bug, automated-report"
