@@ -1,4 +1,7 @@
-# tameronline-agent
+================================================
+File: README.md
+================================================
+# tameronline-searchyolo
 
 ## Overview
 `tameronline-searchyolo` is a lightweight and automated environment setup script designed to streamline the process of creating and activating a virtual environment across different operating systems (Windows, Linux, and macOS). This project ensures that Python dependencies are properly managed and integrated with your development workflow.
@@ -18,58 +21,18 @@
 #### Windows
 **Using Command Prompt:**
 ```cmd
-cd path/to/tameronline-agent
+cd path/to/tameronline-searchyolo
 activate_project.bat
 ```
 **Using PowerShell:**
 ```powershell
-cd path/to/tameronline-agent
+cd path/to/tameronline-searchyolo
 .\activate_project.ps1
 ```
 
 #### Linux/macOS
 ```bash
-cd path/to/tameronline-agent
-chmod +x activate_project.sh
-./activate_project.sh
-```
-
-## Cloning the Project
-To clone the `tameronline-agent` repository to your local machine, follow these steps:
-
-### **1. Ensure Git is Installed**
-Check if Git is installed by running:
-```bash
-git --version
-```
-If not installed, download and install it from [Git Official Website](https://git-scm.com/).
-
-### **2. Clone the Repository**
-Open a terminal or command prompt and execute:
-```bash
-git clone https://github.com/TamerOnLine/tameronline-agent.git
-```
-For SSH access:
-```bash
-git clone git@github.com:TamerOnLine/tameronline-agent.git
-```
-
-### **3. Navigate into the Project Directory**
-```bash
-cd tameronline-agent
-```
-
-### **4. Setup the Virtual Environment**
-#### **Windows (Command Prompt)**
-```cmd
-activate_project.bat
-```
-#### **Windows (PowerShell)**
-```powershell
-.\activate_project.ps1
-```
-#### **Linux/macOS**
-```bash
+cd path/to/tameronline-searchyolo
 chmod +x activate_project.sh
 ./activate_project.sh
 ```
@@ -82,42 +45,54 @@ pip install -r requirements.txt
 
 ## File Structure
 ```
-tameronline-agent/
+tameronline-searchyolo/
 ├── README.md                # Documentation
 ├── activate_project.bat     # Windows CMD script
 ├── activate_project.ps1     # Windows PowerShell script
 ├── activate_project.sh      # Linux/macOS Bash script
 ├── requirements.txt         # List of dependencies
+├── .gitignore               # Git ignore file
+├── tests/
+│   ├── __init__.py          # Marks the tests directory as a package
+│   ├── test_example.py      # Example test case
+│   ├── test_search.py       # Tests for search.py
 └── workspace.code-workspace # VS Code workspace file
 ```
 
-## Usage
-### Activating the Virtual Environment
-After running the respective script for your OS, your terminal will enter the virtual environment. You can confirm this by checking your prompt:
-```bash
-(venv) user@machine:~/tameronline-agent$
-```
+================================================
+File: tests/__init__.py
+================================================
+# This file marks the tests directory as a package.
 
-### Installing Dependencies
-Once the virtual environment is active, install the required dependencies:
-```bash
-pip install -r requirements.txt
-```
+================================================
+File: tests/test_search.py
+================================================
+import pytest
+import os
+import csv
+from src.search import scrape_and_save_to_csv
 
-### Deactivating the Virtual Environment
-To exit the virtual environment, simply run:
-```bash
-deactivate
-```
+def test_scrape_and_save_to_csv():
+    test_url = 'https://www.cdc.gov/heart-disease/about/aortic-aneurysm.html#cdc_disease_basics_types-types'
+    output_file = os.path.join(os.path.dirname(__file__), '../src/aortic_aneurysm_links.csv')
+    
+    # Run the function
+    scrape_and_save_to_csv(test_url)
+    
+    # Check if the file was created
+    assert os.path.exists(output_file), "CSV file was not created"
+    
+    # Read the CSV file and check its contents
+    with open(output_file, 'r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        rows = list(reader)
+        
+        # Ensure the CSV has some data
+        assert len(rows) > 0, "CSV file is empty"
+        
+        # Check the structure of the CSV file
+        assert 'Link Text' in reader.fieldnames, "Missing 'Link Text' column"
+        assert 'Href' in reader.fieldnames, "Missing 'Href' column"
 
-## Troubleshooting
-- **Python Not Found Error**: Ensure Python 3.6+ is installed and available in the system path.
-- **Virtual Environment Activation Fails**: Delete the `venv` folder and rerun the activation script.
-- **Permission Issues on macOS/Linux**: Run `chmod +x activate_project.sh` to grant execution permissions.
-
-## Contribution
-Feel free to submit pull requests or report issues on the [GitHub repository](https://github.com/TamerOnLine/tameronline-agent).
-
-## License
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
+if __name__ == "__main__":
+    pytest.main()
