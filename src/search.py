@@ -2,8 +2,9 @@ import requests
 import csv
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import os
 
-def scrape_and_save_to_csv(url):
+def scrape_and_save_to_csv(url, output_file):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -12,7 +13,6 @@ def scrape_and_save_to_csv(url):
         return
 
     soup = BeautifulSoup(response.content, 'html.parser')
-
     links = soup.find_all('a', href=True)
     data = []
 
@@ -30,11 +30,13 @@ def scrape_and_save_to_csv(url):
             full_url = urljoin(url, href)
             data.append({'Link Text': link.get_text(strip=True), 'Href': full_url})
 
-    with open('aortic_aneurysm_links.csv', 'w', newline='', encoding='utf-8') as file:
+    with open(output_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.DictWriter(file, fieldnames=['Link Text', 'Href'])
         writer.writeheader()
         writer.writerows(data)
+    
+if __name__ == "__main__":
+    url = 'https://www.cdc.gov/heart-disease/about/aortic-aneurysm.html#cdc_disease_basics_types-types'
+    output_file = os.path.join(os.path.dirname(__file__), 'aortic_aneurysm_links.csv')  # حفظ في src/
+    scrape_and_save_to_csv(url, output_file)
 
-# URL for the page
-url = 'https://www.cdc.gov/heart-disease/about/aortic-aneurysm.html#cdc_disease_basics_types-types'
-scrape_and_save_to_csv(url)

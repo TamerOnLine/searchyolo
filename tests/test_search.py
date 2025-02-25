@@ -5,10 +5,10 @@ from src.search import scrape_and_save_to_csv
 
 def test_scrape_and_save_to_csv():
     test_url = 'https://www.cdc.gov/heart-disease/about/aortic-aneurysm.html#cdc_disease_basics_types-types'
-    output_file = os.path.join(os.path.dirname(__file__), '../src/aortic_aneurysm_links.csv')
+    output_file = os.path.abspath(os.path.join(os.path.dirname(__file__), 'aortic_aneurysm_links.csv'))
     
     # Run the function
-    scrape_and_save_to_csv(test_url)
+    scrape_and_save_to_csv(test_url, output_file)
     
     # Check if the file was created
     assert os.path.exists(output_file), "CSV file was not created"
