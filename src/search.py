@@ -37,6 +37,7 @@ def scrape_and_save_to_csv(url, output_file):
     
 if __name__ == "__main__":
     url = 'https://www.cdc.gov/heart-disease/about/aortic-aneurysm.html#cdc_disease_basics_types-types'
-    output_file = os.path.join(os.path.dirname(__file__), 'aortic_aneurysm_links.csv')  # حفظ في src/
+    output_file = os.path.join(os.path.dirname(__file__), 'aortic_aneurysm_links.csv')  # حفظ الملف داخل src/
     scrape_and_save_to_csv(url, output_file)
+
 
